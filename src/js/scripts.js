@@ -25,6 +25,10 @@ async function main() {
       this.#dateOfBirth = value;
     }
     // ^ Essentially this is just a really long winded field at this point.
+
+    introduce() {
+      output(`Hello, my name is ${this.firstName} ${this.lastName}!`);
+    }
   }
 
   let newFirstName = await input("Please enter your first name: ")
@@ -32,7 +36,7 @@ async function main() {
   let newDate = await input("Please enter your date of birth: ")
 
   const me = new Student(newFirstName, newLastName, newDate);
-
+  me.introduce();
   output(JSON.stringify(me));
 }
 
