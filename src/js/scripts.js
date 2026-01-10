@@ -2,16 +2,10 @@
 /* global output, input */
 // eslint-disable-next-line no-unused-vars
 async function main() {
-  class Pen {
-    constructor(brand, colour) {
-      this.brand = brand;
-      this.colour = colour;
+  class InkCartridge {
+    constructor() {
       this.inkLevel = 100;
     }
-
-    brand;
-    colour;
-
     #inkLevel;
     get inkLevel() {
       return this.#inkLevel;
@@ -22,12 +16,24 @@ async function main() {
       }
       this.#inkLevel = value;
     }
+  }
+  class Pen {
+    constructor(brand, colour) {
+      this.brand = brand;
+      this.colour = colour;
+      this.inkCartridge = new InkCartridge();
+    }
+
+    brand;
+    colour;
+    inkCartridge;
+
 
     write(charCount) {
       // output("Before: " + this.#inkLevel);
       // output(charCount);
       try {
-        this.inkLevel -= charCount * 0.5;
+        this.inkCartridge.inkLevel -= charCount * 0.5;
       }
       catch (e) {
         output(e);
@@ -40,6 +46,6 @@ async function main() {
   myPen.write(100);
   myPen.write(42);
   myPen.write(200);
-  output(myPen.inkLevel);
+  output(myPen.inkCartridge.inkLevel);
 }
 
