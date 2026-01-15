@@ -2,15 +2,36 @@
 /* global output, input */
 // eslint-disable-next-line no-unused-vars
 async function main() {
-  class Pen {
+  class WritingUtensil {
     constructor(brand, colour) {
       this.brand = brand;
       this.colour = colour;
-      this.inkLevel = 100;
     }
-
     brand;
     colour;
+  }
+  class Pencil extends WritingUtensil {
+    constructor(brand, colour) {
+      super(brand, colour);
+      this.length = 19;
+    }
+
+    #length;
+    get length() {
+      return this.#length + "cm";
+    }
+    set length(value) {
+      if (value < 0) {
+        throw new Error("The pencil is gone!");
+      }
+      this.#length = value;
+    }
+  }
+  class Pen extends WritingUtensil {
+    constructor(brand, colour) {
+      super(brand, colour);
+      this.inkLevel = 100;
+    }
 
     #inkLevel;
     get inkLevel() {
