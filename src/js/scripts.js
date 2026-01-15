@@ -38,6 +38,10 @@ async function main() {
       this.#length = value;
     }
 
+    get length_inches() {
+      return this.#length * 0.393701;
+    }
+
     write(charCount) {
       for (let i = 0; i < charCount; i++) {
         const random = Math.floor(Math.random() * 100);
@@ -78,6 +82,7 @@ async function main() {
       // output("Before: " + this.#inkLevel);
       // output(charCount);
       try {
+        output("Writing with pen!");
         this.inkLevel -= charCount * 0.5;
       }
       catch (e) {
@@ -88,12 +93,14 @@ async function main() {
   }
 
   const myPen = new Pen("Bic", "Blue");
-  myPen.write(100);
-  myPen.write(42);
-  myPen.write(200);
-  output(myPen.inkLevel);
+  // myPen.write(50);
 
   const myPencil = new Pencil("Ticonderoga", "Black");
-  myPencil.write("50");
+  // myPencil.write(50);
+
+  const myUtensils = [myPen, myPencil];
+  for (utensil of myUtensils) {
+    utensil.write(50);
+  }
 }
 
