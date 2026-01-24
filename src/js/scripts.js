@@ -2,105 +2,144 @@
 /* global output, input */
 // eslint-disable-next-line no-unused-vars
 async function main() {
-  class WritingUtensil {
-    constructor(brand, colour) {
-      if (this.constructor == WritingUtensil) {
+
+  class Shape {
+    // This is a "greedy" constructor, meaning it takes as much data through parameters as possible.
+    constructor(colour) {
+      if (this.constructor == Shape) {
         throw new Error("Abstract classes cannot be directly instantiated.");
       }
-      this.brand = brand;
       this.colour = colour;
     }
-    brand;
+
     colour;
 
-    write() {
-      throw new Error("Abstract method was not implemented.");
+    get perimeter() {
+      throw new Error("Perimeter property is not implemented.");
+    }
+
+    get area() {
+      throw new Error("Area property is not implemented.");
+    }
+
+    contain() {
+      throw new Error("Contain method is not implemented.");
     }
   }
-  class Pencil extends WritingUtensil {
-    constructor(brand, colour) {
-      super(brand, colour);
-      this.length = 19;
-      this.sharp = true;
+  class Rectangle extends Shape {
+    constructor(length, width, colour) {
+      super(colour);
+      this.length = length;
+      this.width = width;
     }
 
-    sharp;
-
-    #length;
-    get length() {
-      return this.#length;
-    }
-    set length(value) {
-      output(`Sharpening pencil - length before is ${this.length}cm.`);
-      if (value < 0) {
-        throw new Error("The pencil is gone!");
-      }
-      this.#length = value;
+    get perimeter() {
+      return Number((this.length * 2 + this.width * 2).toFixed(2));
     }
 
-    get length_inches() {
-      return this.#length * 0.393701;
+    get area() {
+      return Number((this.length * this.width).toFixed(2));
     }
 
-    write(charCount) {
-      for (let i = 0; i < charCount; i++) {
-        const random = Math.floor(Math.random() * 100);
-        const broken = random > 95;
-        output(`For character ${i + 1}, generated ${random} which ${broken ? "breaks" : "does not break"} the pencil tip.`);
-        if (broken) {
-          this.sharp = false;
-        }
-        if (!this.sharp) {
-          this.sharpen();
-        }
-      }
+    get isSquare() {
+      return this.length == this.width;
     }
 
-    sharpen() {
-      this.length -= 1;
-      this.sharp = true
+    length;
+    width;
+
+    contain() {
+      const edge = Math.max(this.length, this.width);
+      return new Rectangle(edge, edge, this.colour);
     }
   }
-  class Pen extends WritingUtensil {
-    constructor(brand, colour) {
-      super(brand, colour);
-      this.inkLevel = 100;
+  class Triangle extends Shape {
+    constructor(base, height, colour) {
+      super(colour);
+      this.base = base;
+      this.height = height;
     }
 
-    #inkLevel;
-    get inkLevel() {
-      return this.#inkLevel;
-    }
-    set inkLevel(value) {
-      if (value < 0) {
-        throw new Error("The pen is out of ink!");
-      }
-      this.#inkLevel = value;
+    base;
+    height;
+
+    get perimeter() {
+      return Number((this.base + (2 * Math.sqrt(Math.pow(this.height, 2) + Math.pow(this.base / 2, 2)))).toFixed(2))
     }
 
-    write(charCount) {
-      // output("Before: " + this.#inkLevel);
-      // output(charCount);
-      try {
-        output("Writing with pen!");
-        this.inkLevel -= charCount * 0.5;
-      }
-      catch (e) {
-        output(e);
-      }
-      // output("After: " + this.#inkLevel);
+    get area() {
+      return Number((this.base * this.height / 2).toFixed(2));
+    }
+
+    contain() {
+      const edge = Math.max(this.base, this.height);
+      return new Rectangle(edge, edge, this.colour);
     }
   }
 
-  const myPen = new Pen("Bic", "Blue");
-  // myPen.write(50);
+  class Circle extends Shape {
+    constructor(radius, colour) {
+      super(colour);
+      this.radius = radius;
+    }
 
-  const myPencil = new Pencil("Ticonderoga", "Black");
-  // myPencil.write(50);
+    radius;
 
-  const myUtensils = [myPen, myPencil];
-  for (utensil of myUtensils) {
-    utensil.write(50);
+    get diameter() {
+      return Number((this.radius * 2).toFixed(2));
+    }
+
+    get perimeter() {
+      return Number((this.diameter * Math.PI).toFixed(2));
+    }
+    get circumference() {
+      return this.perimeter;
+    }
+
+    get area() {
+      return Number((Math.PI * Math.pow(this.radius, 2)).toFixed(2));
+    }
+
+    contain() {
+      return new Rectangle(this.diameter, this.diameter, this.colour);
+    }
   }
+
+  let choice;
+  const shapes = [];
+  do {
+    output("Select a Shape to Create:\n1. Rectangle\n2. Triangle\n3. Circle\n0. Exit");
+    choice = (await input("Choose:")).trim();
+    if (choice == "1") {
+      output("Creating Rectangle");
+      shapes.push(new Rectangle(await input("Please enter Length:"), await input("Please enter Width:"), "Black"));
+    }
+    else if (choice == "2") {
+      output("Creating Triangle");
+      shapes.push(new Triangle(await input("Please enter Base:"), await input("Please enter Height:"), "Black"));
+    }
+    else if (choice == "3") {
+      output("Creating Circle");
+      shapes.push(new Circle(await input("Please enter Radius:"), "Black"));
+    }
+    else {
+      output("Invalid selection, please try again!");
+    }
+    if (["1", "2", "3"].includes(choice)) {
+      console.log(shapes);
+      output(`Total Perimeter: ${shapes.reduce((acc, val) => {
+        return acc + val.perimeter;
+      }, 0)}`);
+      output(`Total Area: ${shapes.reduce((acc, val) => {
+        console.log(acc, val);
+        return acc + val.area;
+      }, 0)}`);
+      output(`Total Area of Containing Squares: ${shapes.reduce((acc, val) => {
+        console.log(acc, val);
+        return acc + val.contain().area;
+      }, 0)}`);
+    }
+  } while (choice != "0");
+
 }
 
