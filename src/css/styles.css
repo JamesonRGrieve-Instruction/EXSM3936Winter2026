@@ -5,3 +5,38 @@ html {
 .selected {
   background-color: chartreuse;
 }
+
+body{
+  width: 50%;
+  margin-left: 25%;
+  margin-right: 25%;
+}
+header{
+  text-align: center;
+}
+
+#imgContainer{
+    width: 100%;
+}
+
+#imgContainer img{
+    max-width: 100%;
+    height: auto;
+    border: 4px solid grey;
+    border-radius: 10px;
+}
+
+footer{
+  text-align: center;
+}
+
+@media screen and (min-width:600px){
+    body{
+        font-size: 1.2em !important;
+    }
+}
+@media screen and (min-width:1024px){
+    body{
+        font-size: 1.5em !important;
+    }
+}
