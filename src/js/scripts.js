@@ -1,44 +1,39 @@
-// const paragraph = document.querySelector("p:nth-of-type(2)");
-const chat = document.querySelector("#chat");
-const messageBox = document.querySelector("#input input");
-const sendButton = document.querySelector("#input button:first-of-type");
-const resetButton = document.querySelector("#input button:last-of-type");
-const timeouts = [];
+const pendingList = document.querySelector("#pending");
+const completedList = document.querySelector("#completed");
+const textBox = document.querySelector("#input input");
+const addButton = document.querySelector("#input button");
+const clearButton = document.querySelector(".container>button");
 
-function sendMessage(sender, message) {
-  console.log(sender, message);
-  const newMsg = document.createElement("p");
-  newMsg.innerText = `${(new Date()).toLocaleTimeString()} ${sender}: ${message}`;
-  chat.appendChild(newMsg);
+function addTodo(message) {
+  const newTodo = document.createElement("div");
+  const newCheck = document.createElement("input");
+  newCheck.type = "checkbox";
+  const newMessage = document.createElement("p");
+  newMessage.innerText = message;
+
+  newCheck.addEventListener("change", (event) => {
+    console.log(event.target.checked);
+    (event.target.checked ? completedList : pendingList).appendChild(event.target.parentNode);
+  });
+
+  newTodo.appendChild(newCheck);
+  newTodo.appendChild(newMessage);
+
+  pendingList.appendChild(newTodo);
 }
 
-// Google AI citing https://www.javascripttutorial.net/javascript-function
-function getRandomIntInclusive(min, max) {
-  // Ensure min and max are treated as integers for a clean range
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-sendButton.addEventListener("click", (event) => {
+addButton.addEventListener("click", (event) => {
   event.preventDefault();
   console.log("Click")
-  if (messageBox.value.trim() != "") {
-    sendMessage("User", messageBox.value.trim());
+  if (textBox.value.trim() != "") {
+    addTodo(textBox.value.trim());
   }
-  messageBox.value = "";
-  timeouts.push(setTimeout(() => {
-    sendMessage("AI", "Lorem ipsum dolor sit amet.");
-  }, getRandomIntInclusive(10, 30) * 1000));
+  textBox.value = "";
 });
 
-resetButton.addEventListener("click", (event) => {
+clearButton.addEventListener("click", (event) => {
   event.preventDefault();
-  while (chat.firstChild) {
-    chat.removeChild(chat.lastChild);
+  while (completedList.firstChild.innerText != completedList.lastChild.innerText) {
+    completedList.removeChild(completedList.lastChild);
   }
-  for (const timeout of timeouts) {
-    clearTimeout(timeout);
-  }
-  timeouts.length = 0;
 });
